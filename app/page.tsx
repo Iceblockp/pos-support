@@ -1,43 +1,95 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Mail, MessageSquare, FileText, Send, CheckCircle2, Smartphone, Globe, Shield, ChevronDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { useState } from "react";
+import {
+  Mail,
+  MessageSquare,
+  FileText,
+  Send,
+  CheckCircle2,
+  Smartphone,
+  Globe,
+  Shield,
+  ChevronDown,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 export default function Home() {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    category: '',
-    message: ''
+    name: "",
+    email: "",
+    subject: "",
+    category: "",
+    message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError("");
 
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-    setIsSubmitting(false);
-    setIsSubmitted(true);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to send message");
+      }
 
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({ name: '', email: '', subject: '', category: '', message: '' });
-    }, 3000);
+      setIsSubmitted(true);
+
+      // Reset form after 3 seconds
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          category: "",
+          message: "",
+        });
+      }, 3000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -47,7 +99,9 @@ export default function Home() {
           <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-600 rounded-2xl mb-6 shadow-lg">
             <Smartphone className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-5xl font-bold text-slate-900 mb-4">Mini POS Support</h1>
+          <h1 className="text-5xl font-bold text-slate-900 mb-4">
+            Mini POS Support
+          </h1>
           <p className="text-xl text-slate-600 max-w-2xl mx-auto">
             Complete Business Solution for Small Businesses
           </p>
@@ -60,11 +114,16 @@ export default function Home() {
                 <Mail className="w-6 h-6 text-blue-600" />
               </div>
               <CardTitle className="text-xl">Email Support</CardTitle>
-              <CardDescription>We typically respond within 24 hours</CardDescription>
+              <CardDescription>
+                We typically respond within 24 hours
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <a href="mailto:phonyo126@gmail.com" className="text-blue-600 hover:text-blue-700 font-medium">
-                phonyo126@gmail.com
+              <a
+                href="mailto:ksl124980@gmail.com"
+                className="text-blue-600 hover:text-blue-700 font-medium"
+              >
+                ksl124980@gmail.com
               </a>
             </CardContent>
           </Card>
@@ -75,10 +134,15 @@ export default function Home() {
                 <MessageSquare className="w-6 h-6 text-green-600" />
               </div>
               <CardTitle className="text-xl">Documentation</CardTitle>
-              <CardDescription>Guides and tutorials to get started</CardDescription>
+              <CardDescription>
+                Guides and tutorials to get started
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <a href="#faq" className="text-blue-600 hover:text-blue-700 font-medium">
+              <a
+                href="#faq"
+                className="text-blue-600 hover:text-blue-700 font-medium"
+              >
                 Browse FAQ
               </a>
             </CardContent>
@@ -93,7 +157,10 @@ export default function Home() {
               <CardDescription>Your data stays on your device</CardDescription>
             </CardHeader>
             <CardContent>
-              <a href="#privacy" className="text-blue-600 hover:text-blue-700 font-medium">
+              <a
+                href="#privacy"
+                className="text-blue-600 hover:text-blue-700 font-medium"
+              >
                 Read Policy
               </a>
             </CardContent>
@@ -105,17 +172,25 @@ export default function Home() {
             <Card className="border-2 shadow-xl">
               <CardHeader>
                 <CardTitle className="text-2xl">Get in Touch</CardTitle>
-                <CardDescription>Send us a message and we'll respond as soon as possible</CardDescription>
+                <CardDescription>
+                  Send us a message and we'll respond as soon as possible
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  {error && (
+                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+                      {error}
+                    </div>
+                  )}
+
                   <div className="space-y-2">
                     <Label htmlFor="name">Full Name</Label>
                     <Input
                       id="name"
                       placeholder="John Doe"
                       value={formData.name}
-                      onChange={(e) => handleChange('name', e.target.value)}
+                      onChange={(e) => handleChange("name", e.target.value)}
                       required
                       disabled={isSubmitting}
                     />
@@ -128,7 +203,7 @@ export default function Home() {
                       type="email"
                       placeholder="john@example.com"
                       value={formData.email}
-                      onChange={(e) => handleChange('email', e.target.value)}
+                      onChange={(e) => handleChange("email", e.target.value)}
                       required
                       disabled={isSubmitting}
                     />
@@ -138,7 +213,7 @@ export default function Home() {
                     <Label htmlFor="category">Category</Label>
                     <Select
                       value={formData.category}
-                      onValueChange={(value) => handleChange('category', value)}
+                      onValueChange={(value) => handleChange("category", value)}
                       required
                       disabled={isSubmitting}
                     >
@@ -146,8 +221,12 @@ export default function Home() {
                         <SelectValue placeholder="Select a category" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="technical">Technical Support</SelectItem>
-                        <SelectItem value="billing">Billing Question</SelectItem>
+                        <SelectItem value="technical">
+                          Technical Support
+                        </SelectItem>
+                        <SelectItem value="billing">
+                          Billing Question
+                        </SelectItem>
                         <SelectItem value="feature">Feature Request</SelectItem>
                         <SelectItem value="bug">Bug Report</SelectItem>
                         <SelectItem value="general">General Inquiry</SelectItem>
@@ -161,7 +240,7 @@ export default function Home() {
                       id="subject"
                       placeholder="Brief description of your inquiry"
                       value={formData.subject}
-                      onChange={(e) => handleChange('subject', e.target.value)}
+                      onChange={(e) => handleChange("subject", e.target.value)}
                       required
                       disabled={isSubmitting}
                     />
@@ -174,7 +253,7 @@ export default function Home() {
                       placeholder="Please provide details about your inquiry..."
                       rows={5}
                       value={formData.message}
-                      onChange={(e) => handleChange('message', e.target.value)}
+                      onChange={(e) => handleChange("message", e.target.value)}
                       required
                       disabled={isSubmitting}
                     />
@@ -191,7 +270,7 @@ export default function Home() {
                         Message Sent!
                       </>
                     ) : isSubmitting ? (
-                      'Sending...'
+                      "Sending..."
                     ) : (
                       <>
                         <Send className="w-5 h-5 mr-2" />
@@ -206,15 +285,22 @@ export default function Home() {
 
           <div className="space-y-8">
             <div>
-              <h2 className="text-3xl font-bold text-slate-900 mb-4">Why Choose Mini POS?</h2>
+              <h2 className="text-3xl font-bold text-slate-900 mb-4">
+                Why Choose Mini POS?
+              </h2>
               <div className="space-y-4">
                 <div className="flex items-start gap-4 p-4 bg-blue-50 rounded-lg">
                   <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
                     <Smartphone className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-slate-900 mb-1">Complete POS Solution</h3>
-                    <p className="text-slate-600 text-sm">Process transactions, manage inventory, and track sales all in one powerful app designed for small businesses.</p>
+                    <h3 className="font-semibold text-slate-900 mb-1">
+                      Complete POS Solution
+                    </h3>
+                    <p className="text-slate-600 text-sm">
+                      Process transactions, manage inventory, and track sales
+                      all in one powerful app designed for small businesses.
+                    </p>
                   </div>
                 </div>
 
@@ -223,8 +309,13 @@ export default function Home() {
                     <Shield className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-slate-900 mb-1">Privacy First</h3>
-                    <p className="text-slate-600 text-sm">100% local data storage. Your business data never leaves your device, ensuring complete privacy and security.</p>
+                    <h3 className="font-semibold text-slate-900 mb-1">
+                      Privacy First
+                    </h3>
+                    <p className="text-slate-600 text-sm">
+                      100% local data storage. Your business data never leaves
+                      your device, ensuring complete privacy and security.
+                    </p>
                   </div>
                 </div>
 
@@ -233,8 +324,13 @@ export default function Home() {
                     <Globe className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-slate-900 mb-1">Multi-Language</h3>
-                    <p className="text-slate-600 text-sm">Full English and Myanmar language support with seamless switching to serve diverse customer bases.</p>
+                    <h3 className="font-semibold text-slate-900 mb-1">
+                      Multi-Language
+                    </h3>
+                    <p className="text-slate-600 text-sm">
+                      Full English and Myanmar language support with seamless
+                      switching to serve diverse customer bases.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -242,7 +338,9 @@ export default function Home() {
 
             <Card className="bg-gradient-to-br from-blue-600 to-blue-700 text-white border-0">
               <CardHeader>
-                <CardTitle className="text-white text-2xl">Key Features</CardTitle>
+                <CardTitle className="text-white text-2xl">
+                  Key Features
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-center gap-3">
@@ -275,61 +373,90 @@ export default function Home() {
         </div>
 
         <div id="faq" className="mb-16">
-          <h2 className="text-3xl font-bold text-slate-900 mb-8 text-center">Frequently Asked Questions</h2>
+          <h2 className="text-3xl font-bold text-slate-900 mb-8 text-center">
+            Frequently Asked Questions
+          </h2>
           <Card className="border-2 shadow-lg">
             <CardContent className="pt-6">
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="item-1">
                   <AccordionTrigger className="text-left">
-                    <span className="font-semibold">Does Mini POS require an internet connection?</span>
+                    <span className="font-semibold">
+                      Does Mini POS require an internet connection?
+                    </span>
                   </AccordionTrigger>
                   <AccordionContent className="text-slate-600">
-                    No, Mini POS works completely offline. All data is stored locally on your device, so you can continue business operations even without internet connectivity.
+                    No, Mini POS works completely offline. All data is stored
+                    locally on your device, so you can continue business
+                    operations even without internet connectivity.
                   </AccordionContent>
                 </AccordionItem>
 
                 <AccordionItem value="item-2">
                   <AccordionTrigger className="text-left">
-                    <span className="font-semibold">Is my business data secure?</span>
+                    <span className="font-semibold">
+                      Is my business data secure?
+                    </span>
                   </AccordionTrigger>
                   <AccordionContent className="text-slate-600">
-                    Yes, absolutely. All your business data is stored locally on your device using SQLite. Your data never leaves your device unless you choose to export it. We do not have access to your business information.
+                    Yes, absolutely. All your business data is stored locally on
+                    your device using SQLite. Your data never leaves your device
+                    unless you choose to export it. We do not have access to
+                    your business information.
                   </AccordionContent>
                 </AccordionItem>
 
                 <AccordionItem value="item-3">
                   <AccordionTrigger className="text-left">
-                    <span className="font-semibold">What thermal printers are supported?</span>
+                    <span className="font-semibold">
+                      What thermal printers are supported?
+                    </span>
                   </AccordionTrigger>
                   <AccordionContent className="text-slate-600">
-                    Mini POS supports Bluetooth thermal printers with standard ESC/POS protocol. Most popular 58mm and 80mm thermal printers are compatible with our app.
+                    Mini POS supports Bluetooth thermal printers with standard
+                    ESC/POS protocol. Most popular 58mm and 80mm thermal
+                    printers are compatible with our app.
                   </AccordionContent>
                 </AccordionItem>
 
                 <AccordionItem value="item-4">
                   <AccordionTrigger className="text-left">
-                    <span className="font-semibold">Can I export my sales data?</span>
+                    <span className="font-semibold">
+                      Can I export my sales data?
+                    </span>
                   </AccordionTrigger>
                   <AccordionContent className="text-slate-600">
-                    Yes, you can export your sales data, inventory reports, and analytics in multiple formats including XLSX (Excel), PDF, and images. This makes it easy to backup your data or share reports with your accountant.
+                    Yes, you can export your sales data, inventory reports, and
+                    analytics in multiple formats including XLSX (Excel), PDF,
+                    and images. This makes it easy to backup your data or share
+                    reports with your accountant.
                   </AccordionContent>
                 </AccordionItem>
 
                 <AccordionItem value="item-5">
                   <AccordionTrigger className="text-left">
-                    <span className="font-semibold">Does Mini POS support multiple languages?</span>
+                    <span className="font-semibold">
+                      Does Mini POS support multiple languages?
+                    </span>
                   </AccordionTrigger>
                   <AccordionContent className="text-slate-600">
-                    Yes, Mini POS fully supports both English and Myanmar languages. You can easily switch between languages in the app settings.
+                    Yes, Mini POS fully supports both English and Myanmar
+                    languages. You can easily switch between languages in the
+                    app settings.
                   </AccordionContent>
                 </AccordionItem>
 
                 <AccordionItem value="item-6">
                   <AccordionTrigger className="text-left">
-                    <span className="font-semibold">Can I customize receipt templates?</span>
+                    <span className="font-semibold">
+                      Can I customize receipt templates?
+                    </span>
                   </AccordionTrigger>
                   <AccordionContent className="text-slate-600">
-                    Yes, Mini POS offers 4 professional receipt templates (Classic, Modern, Minimal, and Elegant). You can also add your business logo and customize business information on all receipts.
+                    Yes, Mini POS offers 4 professional receipt templates
+                    (Classic, Modern, Minimal, and Elegant). You can also add
+                    your business logo and customize business information on all
+                    receipts.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
@@ -344,37 +471,64 @@ export default function Home() {
               <CardDescription>Last updated: October 2025</CardDescription>
             </CardHeader>
             <CardContent className="prose prose-slate max-w-none">
-              <h3 className="text-lg font-semibold text-slate-900 mt-4 mb-2">Data Collection and Storage</h3>
+              <h3 className="text-lg font-semibold text-slate-900 mt-4 mb-2">
+                Data Collection and Storage
+              </h3>
               <p className="text-slate-600 mb-4">
-                Mini POS is designed with your privacy as the top priority. All business data, including sales transactions, inventory, customer information, and analytics, is stored locally on your device using SQLite database technology. We do not collect, transmit, or store any of your business data on external servers.
+                Mini POS is designed with your privacy as the top priority. All
+                business data, including sales transactions, inventory, customer
+                information, and analytics, is stored locally on your device
+                using SQLite database technology. We do not collect, transmit,
+                or store any of your business data on external servers.
               </p>
 
-              <h3 className="text-lg font-semibold text-slate-900 mt-6 mb-2">No Cloud Dependency</h3>
+              <h3 className="text-lg font-semibold text-slate-900 mt-6 mb-2">
+                No Cloud Dependency
+              </h3>
               <p className="text-slate-600 mb-4">
-                Unlike many POS systems, Mini POS does not require or use cloud services for data storage. This means your sensitive business information never leaves your device unless you explicitly choose to export it.
+                Unlike many POS systems, Mini POS does not require or use cloud
+                services for data storage. This means your sensitive business
+                information never leaves your device unless you explicitly
+                choose to export it.
               </p>
 
-              <h3 className="text-lg font-semibold text-slate-900 mt-6 mb-2">Data Ownership</h3>
+              <h3 className="text-lg font-semibold text-slate-900 mt-6 mb-2">
+                Data Ownership
+              </h3>
               <p className="text-slate-600 mb-4">
-                You retain complete ownership and control of all your business data. You can export, backup, or delete your data at any time directly from the app.
+                You retain complete ownership and control of all your business
+                data. You can export, backup, or delete your data at any time
+                directly from the app.
               </p>
 
-              <h3 className="text-lg font-semibold text-slate-900 mt-6 mb-2">Permissions</h3>
+              <h3 className="text-lg font-semibold text-slate-900 mt-6 mb-2">
+                Permissions
+              </h3>
               <p className="text-slate-600 mb-4">
-                Mini POS only requests permissions necessary for its functionality, including camera access for barcode scanning, storage access for data backup, and Bluetooth for printer connectivity. We never request unnecessary permissions.
+                Mini POS only requests permissions necessary for its
+                functionality, including camera access for barcode scanning,
+                storage access for data backup, and Bluetooth for printer
+                connectivity. We never request unnecessary permissions.
               </p>
 
-              <h3 className="text-lg font-semibold text-slate-900 mt-6 mb-2">Contact Information</h3>
+              <h3 className="text-lg font-semibold text-slate-900 mt-6 mb-2">
+                Contact Information
+              </h3>
               <p className="text-slate-600">
-                If you have questions about our privacy practices, please contact us at phonyo126@gmail.com.
+                If you have questions about our privacy practices, please
+                contact us at ksl124980@gmail.com.
               </p>
             </CardContent>
           </Card>
         </div>
 
         <div className="text-center py-12 border-t border-slate-200">
-          <p className="text-slate-600 mb-2">Built with care for small businesses</p>
-          <p className="text-slate-500 text-sm">© 2025 Mini POS. All rights reserved.</p>
+          <p className="text-slate-600 mb-2">
+            Built with care for small businesses
+          </p>
+          <p className="text-slate-500 text-sm">
+            © 2025 Mini POS. All rights reserved.
+          </p>
         </div>
       </div>
     </div>
