@@ -31,46 +31,57 @@ const manualSections = [
       "./images/overview/5.png",
     ],
   },
+
   {
-    id: "make-sale",
-    title: "How to Make a Sale",
+    id: "sales",
+    title: "ရောင်းချခြင်း",
+    images: ["./images/sales/1.png"],
+  },
+  {
+    id: "product-sale",
+    title: "ကုန်ပစ္စည်းရောင်းချခြင်း",
     images: [
-      "https://images.pexels.com/photos/5632402/pexels-photo-5632402.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "https://images.pexels.com/photos/4968630/pexels-photo-4968630.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "https://images.pexels.com/photos/6348119/pexels-photo-6348119.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "./images/sales/2.png",
+      "./images/sales/3.png",
+      "./images/sales/4.png",
+      "./images/sales/5.png",
+      "./images/sales/6.png",
+      "./images/sales/7.png",
+      "./images/sales/8.png",
+      "./images/sales/9.png",
     ],
   },
   {
-    id: "print-receipt",
-    title: "How to Print Receipt",
+    id: "rawbt",
+    title: "RawBT ချိတ်ဆက်ခြင်း",
     images: [
-      "https://images.pexels.com/photos/5650023/pexels-photo-5650023.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "https://images.pexels.com/photos/4386373/pexels-photo-4386373.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "./images/rawbt/1.png",
+      "./images/rawbt/2.png",
+      "./images/rawbt/3.png",
+      "./images/rawbt/4.png",
+      "./images/rawbt/5.png",
     ],
   },
   {
-    id: "manage-inventory",
-    title: "How to Manage Inventory",
+    id: "products",
+    title: "ကုန်စာရင်းများ",
     images: [
-      "https://images.pexels.com/photos/7661590/pexels-photo-7661590.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "https://images.pexels.com/photos/4483610/pexels-photo-4483610.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "https://images.pexels.com/photos/7679720/pexels-photo-7679720.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "./images/products/1.png",
+      "./images/products/2.png",
+      "./images/products/3.png",
+      "./images/products/4.png",
+      "./images/products/5.png",
+      "./images/products/6.png",
+      "./images/products/7.png",
     ],
   },
   {
-    id: "view-reports",
-    title: "How to View Reports",
+    id: "reports",
+    title: "စာရင်းချုပ်ကြည့်ခြင်း",
     images: [
-      "https://images.pexels.com/photos/7681670/pexels-photo-7681670.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=800",
-    ],
-  },
-  {
-    id: "export-data",
-    title: "How to Export Data",
-    images: [
-      "https://images.pexels.com/photos/4475523/pexels-photo-4475523.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "https://images.pexels.com/photos/5699822/pexels-photo-5699822.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "./images/reports/1.png",
+      "./images/reports/2.png",
+      "./images/reports/3.png",
     ],
   },
 ];
@@ -169,7 +180,7 @@ export default function ManualPage() {
         )}
 
         <main className="flex-1 overflow-y-auto">
-          <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-slate-200 px-4 py-4 lg:px-8">
+          <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-slate-200 px-4 py-4 lg:px-8 flex justify-between items-center">
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setSidebarOpen(true)}
@@ -185,6 +196,15 @@ export default function ManualPage() {
                   Step-by-step guide with screenshots
                 </p>
               </div>
+            </div>
+            <div>
+              <a
+                href="/apk/base.apk"
+                className="text-blue-600 font-semibold"
+                download
+              >
+                Download RawBT APK
+              </a>
             </div>
           </div>
 
@@ -209,12 +229,12 @@ export default function ManualPage() {
                       priority={index === 0}
                     />
                   </div>
-                  <div className="px-6 py-4 bg-white">
+                  {/* <div className="px-6 py-4 bg-white">
                     <p className="text-slate-600">
                       Follow the instructions shown in the screenshot above to
                       complete this step.
                     </p>
-                  </div>
+                  </div> */}
                 </Card>
               ))}
             </div>
